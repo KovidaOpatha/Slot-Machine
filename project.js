@@ -1,13 +1,31 @@
 // 1. Deposit some money - Done
 // 2. Determine number of lines to bet on - Done
 //    - Validates input to ensure it's between 1 and 3
-// 3. Collect a bet amount
+// 3. Collect a bet amount - Done
+//    - Validates input to ensure it's a positive number and does not exceed the balance
 // 4. Spin the slot machine
 // 5. Determine if the player won or lost
 // 6. Update the player's balance
 // 7. Play again or exit
 
 const prompt = require('prompt-sync')();
+
+const ROWS = 3;
+const COLUMNS = 3;
+
+const SUMBOLS_COUNT = {
+    A: 2,
+    B: 4,
+    C: 6,
+    D: 8,
+};
+
+const SYMBOL_VALUES = {
+    A: 5,
+    B: 4,
+    C: 3,
+    D: 2,
+};
 
 const deposit = () => {
     while (true) {
@@ -35,6 +53,20 @@ const getNumberOfLines = () => {
     }
 }
 
-const depositAmount = deposit();
+const getBet = (balance, numberOfLines) => {
+    while (true) {
+        const bet = prompt('Enter bet amount per line: ');
+        const betAmount = parseFloat(bet);
+
+        if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance / numberOfLines) {
+            console.log('Invalid bet amount, Try again.');
+        } else {
+            return betAmount;
+        }
+    }
+}
+
+let balance = deposit();
 const numberOfLines = getNumberOfLines();
+const bet = getBet(balance, numberOfLines);
 
