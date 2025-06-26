@@ -3,7 +3,10 @@
 //    - Validates input to ensure it's between 1 and 3
 // 3. Collect a bet amount - Done
 //    - Validates input to ensure it's a positive number and does not exceed the balance
-// 4. Spin the slot machine
+// 4. Spin the slot machine - Done
+//    - Randomly selects symbols for each reel based on predefined counts
+//    - Each reel contains 3 symbols
+//    - Each symbol has a specific value
 // 5. Determine if the player won or lost
 // 6. Update the player's balance
 // 7. Play again or exit
@@ -11,9 +14,9 @@
 const prompt = require('prompt-sync')();
 
 const ROWS = 3;
-const COLUMNS = 3;
+const COLUMS = 3;
 
-const SUMBOLS_COUNT = {
+const SYMBOLS_COUNT = {
     A: 2,
     B: 4,
     C: 6,
@@ -66,6 +69,29 @@ const getBet = (balance, numberOfLines) => {
     }
 }
 
+const spin = () => {
+    const symbols = [];
+    for (const [symbol, count] of Object.entries(SYMBOLS_COUNT)) {
+        for (let i = 0; i < count; i++) {
+            symbols.push(symbol);
+        }
+    }
+    const reels = [[], [], []];
+    for (let i = 0; i < COLUMS; i++) {
+        const reelSymbols = [...symbols];
+        for (let j = 0; j < ROWS; j++) {
+            const randomIndex = Math.floor(Math.random() * reelSymbols.length)
+            const selectedSymbol = reelSymbols[randomIndex];
+            reels[i].push(selectedSymbol);
+            reelSymbols.splice(randomIndex, 1);
+        }
+    }
+
+    return reels;
+};
+
+const reels = spin();
+console.log(reels);
 let balance = deposit();
 const numberOfLines = getNumberOfLines();
 const bet = getBet(balance, numberOfLines);
