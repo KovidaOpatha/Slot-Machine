@@ -11,8 +11,12 @@
 //    - Checks each line for matching symbols
 //    - Calculates winnings based on the bet amount and symbol values
 //    - If all symbols in a line match, the player wins
-// 6. Update the player's balance
-// 7. Play again or exit
+// 6. Update the player's balance - Done
+//    - Adds winnings to the balance
+//    - Deducts the total bet amount from the balance
+//    - If the balance is zero or negative, the game ends
+// 7. Play again or exit - Done
+//    - Prompts the player to play again or exit the game
 
 const prompt = require('prompt-sync')();
 
@@ -142,11 +146,32 @@ const getWinnigs = (rows, bet, numberOfLines) => {
     return winnings;
 }
 
-let balance = deposit();
-const numberOfLines = getNumberOfLines();
-const bet = getBet(balance, numberOfLines);
-const reels = spin();
-const rows = transpose(reels);
-printRows(rows);
-const winnings = getWinnigs(rows, bet, numberOfLines);
-console.log(`You won: $${winnings}`);
+const game = () => {
+    let balance = deposit();
+
+    while (true) {
+        console.log(`Your balance is: $${balance}`);
+        const numberOfLines = getNumberOfLines();
+        const bet = getBet(balance, numberOfLines);
+        balance -= bet * numberOfLines;
+        const reels = spin();
+        const rows = transpose(reels);
+        printRows(rows);
+        const winnings = getWinnigs(rows, bet, numberOfLines);
+        balance += winnings;
+        console.log(`You won: $${winnings}`);
+
+        if (balance <=0) {
+            console.log('You have no balance left. Game over!');
+            break;
+        }
+
+        const playAgain = prompt('Do you want to play again? (y/n): ').toLowerCase();
+        if (playAgain !== 'y') {
+            console.log('Thanks for playing!');
+            break;
+        }
+    }
+}
+
+game();
