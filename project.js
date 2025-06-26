@@ -7,7 +7,10 @@
 //    - Randomly selects symbols for each reel based on predefined counts
 //    - Each reel contains 3 symbols
 //    - Each symbol has a specific value
-// 5. Determine if the player won or lost
+// 5. Determine if the player won or lost - Done
+//    - Checks each line for matching symbols
+//    - Calculates winnings based on the bet amount and symbol values
+//    - If all symbols in a line match, the player wins
 // 6. Update the player's balance
 // 7. Play again or exit
 
@@ -117,9 +120,33 @@ const printRows = (rows) => {
     }
 };
 
+const getWinnigs = (rows, bet, numberOfLines) => {
+    let winnings = 0;
+
+    for (let row = 0; row < numberOfLines; row++) {
+        const symbols = rows[row];
+        let allSame = true;
+
+        for (const symbol of symbols) {
+            if (symbol !== symbols[0]) {
+                allSame = false;
+                break;
+            }
+        }
+
+        if (allSame) {
+            winnings += bet * SYMBOL_VALUES[symbols[0]];
+        }
+    }
+
+    return winnings;
+}
+
 let balance = deposit();
 const numberOfLines = getNumberOfLines();
 const bet = getBet(balance, numberOfLines);
 const reels = spin();
 const rows = transpose(reels);
 printRows(rows);
+const winnings = getWinnigs(rows, bet, numberOfLines);
+console.log(`You won: $${winnings}`);
